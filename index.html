@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price List - Live Stock</title>
+    <style>
+        body { font-family: Arial; margin: 0; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; }
+        .status { background: white; margin: 10px; padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .search { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .search input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        .item { background: white; margin: 10px; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #2c5aa0; }
+        .item-name { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .item-details { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .prices { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0; }
+        .price-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .stock { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .live { background: #28a745; color: white; padding: 3px 10px; border-radius: 12px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Price List Stock <span class="live">LIVE</span></h1>
+        <p>localhost\BusyComp0002_db (Windows Auth) • Auto-updates every minute</p>
+    </div>
+    
+    <div class="status" id="status">
+        <span id="statusText">Loading data...</span>
+    </div>
+    
+    <div class="search">
+        <input type="text" id="search" placeholder="Search items...">
+    </div>
+    
+    <div id="items"></div>
+
+    <script>
+        let data = [];
+        
+        async function loadData() {
+            try {
+                document.getElementById('statusText').innerHTML = '🔄 Loading...';
+                const response = await fetch('stock_data.js?t=' + Date.now());
+                const js = await response.text();
+                eval(js);
+                
+                if (window.stockData) {
+                    data = window.stockData;
+                    renderItems(data);
+                    document.getElementById('statusText').innerHTML = 
+                        `🟢 Live: ${new Date().toLocaleTimeString()} • ${data.length} items`;
+                }
+            } catch (e) {
+                document.getElementById('statusText').innerHTML = '🔴 Error loading data';
+            }
+        }
+        
+        function renderItems(items) {
+            const container = document.getElementById('items');
+            container.innerHTML = items.map(item => `
+                <div class="item">
+                    <div class="item-name">${escape(item.ItemName)}</div>
+                    <div class="item-details">${escape(item.ItemAlias)} • ${escape(item.GroupName)}</div>
+                    <div class="prices">
+                        <span style="background:#007bff;color:white" class="price-badge">MRP: ₹${format(item.Item_MRP)}</span>
+                        <span style="background:#28a745;color:white" class="price-badge">Sale: ₹${format(item.Item_Sale_Price)}</span>
+                        <span style="background:#ffc107;color:#333" class="price-badge">Buy: ₹${format(item.Item_Purchase_Price)}</span>
+                        <span style="background:#dc3545;color:white" class="price-badge">Self: ₹${format(item.Item_SelfVal_Price)}</span>
+                    </div>
+                    <span class="stock" style="background:${getStockColor(item.Stock)};">
+                        Stock: ${item.Stock}
+                    </span>
+                </div>
+            `).join('');
+        }
+        
+        function format(num) { return parseFloat(num || 0).toFixed(2); }
+        function escape(text) { return (text || '').toString().replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]); }
+        function getStockColor(stock) { 
+            const s = parseFloat(stock); 
+            if (s > 10) return '#d4edda'; 
+            if (s > 0) return '#fff3cd'; 
+            return '#f8d7da'; 
+        }
+        
+        // Search
+        document.getElementById('search').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            if (term) {
+                const filtered = data.filter(item => 
+                    (item.ItemName || '').toLowerCase().includes(term) ||
+                    (item.ItemAlias || '').toLowerCase().includes(term)
+                );
+                renderItems(filtered);
+            } else {
+                renderItems(data);
+            }
+        });
+        
+        // Auto-refresh every 10 seconds
+        loadData();
+        setInterval(loadData, 10000);
+    </script>
+</body>
+</html>
+
+
+
