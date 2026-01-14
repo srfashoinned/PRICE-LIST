@@ -3,57 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price List - Live Stock</title>
+    <title>LIBAS Stock</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- HTML5 QR Code Scanner for mobile devices -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
-        .header { background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); color: white; padding: 20px; text-align: center; }
-        .header h1 { margin-bottom: 10px; }
-        .stats { display: flex; flex-wrap: wrap; gap: 15px; padding: 15px; background: white; margin: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .stat-card { flex: 1; min-width: 150px; padding: 15px; background: #f8f9fa; border-radius: 6px; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #2c5aa0; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: #f5f5f5; 
+            color: #333;
+            font-size: 16px; /* Increased base font size */
+        }
         
-        /* Search Box with Scanner Button */
+        /* HEADER - SIMPLIFIED */
+        .header { 
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); 
+            color: white; 
+            padding: 25px 20px; /* Increased padding */
+            text-align: center;
+        }
+        .header h1 { 
+            font-size: 36px; /* Increased font size */
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .live-badge { 
+            background: #28a745; 
+            color: white; 
+            padding: 8px 20px; /* Increased padding */
+            border-radius: 20px; 
+            margin-left: 15px;
+            font-size: 18px; /* Increased font size */
+            font-weight: bold;
+            animation: pulse 2s infinite; 
+            vertical-align: middle;
+        }
+        @keyframes pulse { 
+            0% { opacity: 1; } 
+            50% { opacity: 0.7; } 
+            100% { opacity: 1; } 
+        }
+        
+        /* Search Box with Scanner */
         .search-container { 
             background: white; 
-            padding: 15px; 
-            margin: 10px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px; /* Increased padding */
+            margin: 15px; /* Increased margin */
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Stronger shadow */
             display: flex;
-            gap: 10px;
+            gap: 15px; /* Increased gap */
             align-items: center;
         }
         .search-input { 
             flex: 1; 
-            padding: 12px; 
+            padding: 16px; /* Increased padding */
             border: 2px solid #ddd; 
-            border-radius: 6px; 
-            font-size: 16px;
+            border-radius: 8px; 
+            font-size: 18px; /* Increased font size */
             transition: border-color 0.3s;
         }
         .search-input:focus { 
             border-color: #2c5aa0; 
             outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
         }
         .scan-btn {
             background: #28a745;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
+            padding: 16px 25px; /* Increased padding */
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px; /* Increased font size */
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px; /* Increased gap */
             white-space: nowrap;
+            font-weight: bold;
         }
-        .scan-btn:hover { background: #218838; }
+        .scan-btn:hover { 
+            background: #218838; 
+            transform: translateY(-2px);
+            transition: all 0.3s;
+        }
         .scan-btn.mobile { background: #007bff; }
+        .scan-btn.mobile:hover { background: #0069d9; }
         
         /* Scanner Modal */
         .scanner-modal {
@@ -63,150 +100,239 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         .scanner-box {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px; /* Increased padding */
+            border-radius: 15px;
             width: 90%;
             max-width: 500px;
             text-align: center;
         }
+        .scanner-box h3 {
+            font-size: 24px; /* Increased font size */
+            margin-bottom: 15px;
+            color: #2c5aa0;
+        }
+        .scanner-box p {
+            font-size: 16px; /* Increased font size */
+            margin-bottom: 20px;
+            color: #666;
+        }
         #qr-reader {
             width: 100%;
-            margin: 15px 0;
+            margin: 20px 0; /* Increased margin */
         }
         .close-scanner {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px 25px; /* Increased padding */
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px; /* Increased margin */
+            font-size: 16px; /* Increased font size */
+            font-weight: bold;
+        }
+        .close-scanner:hover {
+            background: #c82333;
         }
         
-        /* Items */
+        /* ITEMS - UPDATED STYLING */
         .item-card { 
             background: white; 
-            margin: 10px; 
-            padding: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            border-left: 4px solid #2c5aa0;
-            transition: transform 0.2s;
+            margin: 15px; /* Increased margin */
+            padding: 20px; /* Increased padding */
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Stronger shadow */
+            border-left: 5px solid #2c5aa0; /* Thicker border */
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .item-card:hover { transform: translateY(-2px); }
-        .item-name { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-        .item-details { color: #666; font-size: 14px; margin-bottom: 10px; }
-        .prices { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
-        .price-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .mrp { background: #007bff; color: white; }
-        .sale { background: #28a745; color: white; }
-        .purchase { background: #ffc107; color: #333; }
-        .wholesale { background: #dc3545; color: white; }
+        .item-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
         
-        .stock { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; }
-        .stock-high { background: #d4edda; color: #155724; }
-        .stock-low { background: #fff3cd; color: #856404; }
-        .stock-zero { background: #f8d7da; color: #721c24; }
+        .item-name { 
+            font-weight: bold; 
+            font-size: 20px; /* Increased font size */
+            margin-bottom: 10px; /* Increased margin */
+            color: #2c5aa0;
+        }
+        .item-details { 
+            color: #666; 
+            font-size: 16px; /* Increased font size */
+            margin-bottom: 15px; /* Increased margin */
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+        }
         
-        .live-badge { 
+        /* PRICES - UPDATED ORDER AND COLORS */
+        .prices { 
+            display: flex; 
+            gap: 10px; /* Increased gap */
+            flex-wrap: wrap; 
+            margin-bottom: 15px; /* Increased margin */
+        }
+        .price-badge { 
+            padding: 8px 15px; /* Increased padding */
+            border-radius: 6px; 
+            font-size: 14px; /* Increased font size */
+            font-weight: bold;
+        }
+        .mrp { 
+            background: #007bff; 
+            color: white;
+            order: 1; /* MRP first */
+        }
+        .sale { 
             background: #28a745; 
-            color: white; 
-            padding: 3px 10px; 
-            border-radius: 12px; 
-            margin-left: 10px; 
-            animation: pulse 2s infinite; 
+            color: white;
+            order: 2; /* Sale second */
         }
-        @keyframes pulse { 
-            0% { opacity: 1; } 
-            50% { opacity: 0.7; } 
-            100% { opacity: 1; } 
+        .wholesale { 
+            background: #6f42c1; /* Purple for wholesale */
+            color: white;
+            order: 3; /* Wholesale third */
+        }
+        .purchase { 
+            background: #dc3545; /* RED as requested */
+            color: white;
+            order: 4; /* Purchase last */
         }
         
+        /* STOCK - UPDATED */
+        .stock { 
+            padding: 8px 20px; /* Increased padding */
+            border-radius: 20px; 
+            font-size: 16px; /* Increased font size */
+            font-weight: bold; 
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .stock-high { 
+            background: #d4edda; 
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .stock-low { 
+            background: #fff3cd; 
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+        .stock-zero { 
+            background: #f8d7da; 
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        /* Status Bar */
         .status-bar { 
             text-align: center; 
-            padding: 10px; 
-            font-size: 14px; 
+            padding: 15px; /* Increased padding */
+            font-size: 16px; /* Increased font size */
             color: #666;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 15px; /* Increased gap */
             flex-wrap: wrap;
+            background: white;
+            margin: 15px; /* Increased margin */
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .refresh-controls {
             display: flex;
-            gap: 10px;
+            gap: 15px; /* Increased gap */
             align-items: center;
         }
         .refresh-toggle {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 8px 15px; /* Increased padding */
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px; /* Increased font size */
+            font-weight: bold;
         }
         .refresh-toggle.active {
             background: #28a745;
         }
-        
-        /* Mobile specific */
-        @media (max-width: 768px) {
-            .search-container { flex-direction: column; }
-            .scan-btn { width: 100%; justify-content: center; }
-            .stats { flex-direction: column; }
-            .stat-card { min-width: auto; }
+        .refresh-toggle:hover {
+            opacity: 0.9;
+        }
+        #manualRefreshBtn {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 8px 15px; /* Increased padding */
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px; /* Increased font size */
+            font-weight: bold;
+        }
+        #manualRefreshBtn:hover {
+            background: #1e3a8a;
         }
         
         /* No items message */
         .no-items {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px; /* Increased padding */
             color: #666;
         }
         .no-items i {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 64px; /* Increased font size */
+            margin-bottom: 20px; /* Increased margin */
             color: #ccc;
+        }
+        .no-items h3 {
+            font-size: 24px; /* Increased font size */
+            margin-bottom: 15px; /* Increased margin */
+        }
+        .no-items p {
+            font-size: 18px; /* Increased font size */
+        }
+        
+        /* Mobile specific */
+        @media (max-width: 768px) {
+            body { font-size: 18px; } /* Even larger on mobile */
+            .header h1 { font-size: 32px; }
+            .live-badge { font-size: 16px; padding: 6px 15px; }
+            .search-container { flex-direction: column; }
+            .scan-btn { width: 100%; justify-content: center; }
+            .item-name { font-size: 22px; } /* Larger on mobile */
+            .item-details { font-size: 18px; }
+            .price-badge { font-size: 16px; padding: 10px 18px; }
+            .stock { font-size: 18px; padding: 10px 25px; }
+        }
+        
+        /* Tablet */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .item-card {
+                margin: 20px;
+                padding: 25px;
+            }
+            .item-name { font-size: 22px; }
         }
     </style>
 </head>
 <body>
+    <!-- SIMPLIFIED HEADER -->
     <div class="header">
-        <h1>Price List Stock <span class="live-badge">LIVE</span></h1>
-        <p>Z:\PRICE LIST • SQL Server: localhost\BusyComp0002_db</p>
-    </div>
-    
-    <div class="stats" id="statsBar">
-        <div class="stat-card">
-            <div>Total Items</div>
-            <div class="stat-value" id="totalItems">0</div>
-        </div>
-        <div class="stat-card">
-            <div>In Stock</div>
-            <div class="stat-value" id="inStock">0</div>
-        </div>
-        <div class="stat-card">
-            <div>Out of Stock</div>
-            <div class="stat-value" id="outOfStock">0</div>
-        </div>
-        <div class="stat-card">
-            <div>Total Value</div>
-            <div class="stat-value" id="totalValue">₹0</div>
-        </div>
+        <h1>LIBAS <span class="live-badge">LIVE</span></h1>
     </div>
     
     <!-- Search Box with Scanner -->
     <div class="search-container">
-        <input type="text" class="search-input" placeholder="Search items by name, barcode, or group..." id="searchInput">
+        <input type="text" class="search-input" placeholder="Search by name, barcode, or group..." id="searchInput">
         <button class="scan-btn" id="desktopScanBtn">
             <i class="fas fa-camera"></i> Scan Barcode
         </button>
@@ -223,11 +349,11 @@
             
             <div id="qr-reader"></div>
             
-            <div id="scannerStatus" style="margin: 10px 0; color: #666; font-size: 14px;">
+            <div id="scannerStatus" style="margin: 15px 0; color: #666; font-size: 16px;">
                 <i class="fas fa-info-circle"></i> Ready to scan...
             </div>
             
-            <div id="scanResult" style="display: none; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+            <div id="scanResult" style="display: none; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                 <div id="scannedItem"></div>
             </div>
             
@@ -237,7 +363,7 @@
         </div>
     </div>
     
-    <!-- Status Bar with Refresh Controls -->
+    <!-- Status Bar -->
     <div class="status-bar" id="status">
         <span id="statusText">
             <i class="fas fa-spinner fa-spin"></i> Loading live stock data...
@@ -257,7 +383,7 @@
     <div id="itemsContainer">
         <div id="welcome" class="no-items">
             <i class="fas fa-warehouse"></i>
-            <h3>Price List Stock Management</h3>
+            <h3>LIBAS Stock Management</h3>
             <p>Search products or scan barcodes to begin</p>
         </div>
         <div id="itemsList"></div>
@@ -277,26 +403,20 @@
         // =================== DATA LOADING ===================
         async function loadData() {
             try {
-                if (isSearching) {
-                    // Don't interrupt if user is searching
-                    return;
-                }
+                if (isSearching) return;
                 
                 updateStatus('<i class="fas fa-spinner fa-spin"></i> Loading...');
                 
                 const response = await fetch('stock_data.js?t=' + Date.now());
                 const jsCode = await response.text();
                 
-                // Clear and execute
                 window.stockData = null;
                 delete window.stockData;
                 eval(jsCode);
                 
                 if (window.stockData) {
                     currentData = window.stockData;
-                    updateStats();
                     
-                    // Only update items if not searching
                     if (!isSearching) {
                         renderItems(currentData);
                     }
@@ -305,7 +425,6 @@
                     const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
                     updateStatus(`<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Live: ${timeStr} | ${currentData.length} items</span>`);
                     
-                    // Hide welcome message
                     document.getElementById('welcome').style.display = 'none';
                 }
             } catch (error) {
@@ -323,12 +442,8 @@
             searchInput.addEventListener('input', function(e) {
                 isSearching = true;
                 
-                // Clear previous timeout
-                if (searchTimeout) {
-                    clearTimeout(searchTimeout);
-                }
+                if (searchTimeout) clearTimeout(searchTimeout);
                 
-                // Debounce search to avoid flickering
                 searchTimeout = setTimeout(() => {
                     const term = e.target.value.trim().toLowerCase();
                     
@@ -336,7 +451,6 @@
                         isSearching = false;
                         filteredData = currentData;
                         renderItems(currentData);
-                        updateStats();
                     } else {
                         filteredData = currentData.filter(item => 
                             (item.ItemName && item.ItemName.toLowerCase().includes(term)) ||
@@ -345,31 +459,14 @@
                         );
                         
                         renderItems(filteredData);
-                        
-                        // Update stats for filtered items
-                        const totalItems = filteredData.length;
-                        const inStock = filteredData.filter(item => parseFloat(item.Stock || 0) > 0).length;
-                        const outOfStock = totalItems - inStock;
-                        
-                        let totalValue = 0;
-                        filteredData.forEach(item => {
-                            totalValue += (parseFloat(item.Stock) || 0) * (parseFloat(item.Item_Purchase_Price) || 0);
-                        });
-                        
-                        document.getElementById('totalItems').textContent = totalItems;
-                        document.getElementById('inStock').textContent = inStock;
-                        document.getElementById('outOfStock').textContent = outOfStock;
-                        document.getElementById('totalValue').textContent = '₹' + totalValue.toFixed(2);
                     }
-                }, 300); // 300ms debounce
+                }, 300);
             });
             
-            // Clear search when clicking X (type="search" browsers)
             searchInput.addEventListener('search', function(e) {
                 if (e.target.value === '') {
                     isSearching = false;
                     renderItems(currentData);
-                    updateStats();
                 }
             });
         }
@@ -381,10 +478,8 @@
             const scannerModal = document.getElementById('scannerModal');
             const closeScannerBtn = document.getElementById('closeScanner');
             
-            // Check if device is mobile
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            // Show appropriate scan button
             if (isMobile) {
                 mobileScanBtn.style.display = 'flex';
                 desktopScanBtn.style.display = 'none';
@@ -393,7 +488,6 @@
                 desktopScanBtn.style.display = 'flex';
             }
             
-            // Desktop scanner (opens instructions)
             desktopScanBtn.addEventListener('click', function() {
                 document.getElementById('scannerStatus').innerHTML = 
                     '<i class="fas fa-info-circle"></i> Use mobile device for scanning<br>' +
@@ -401,18 +495,14 @@
                 scannerModal.style.display = 'flex';
             });
             
-            // Mobile scanner (activates camera)
             mobileScanBtn.addEventListener('click', function() {
                 scannerModal.style.display = 'flex';
                 startMobileScanner();
             });
             
-            // Close scanner
             closeScannerBtn.addEventListener('click', closeScanner);
             scannerModal.addEventListener('click', function(e) {
-                if (e.target === scannerModal) {
-                    closeScanner();
-                }
+                if (e.target === scannerModal) closeScanner();
             });
         }
         
@@ -429,8 +519,7 @@
                 qrbox: { width: 250, height: 250 } 
             };
             
-            // Start back camera on mobile, user camera on desktop
-            const cameraId = 'environment'; // Prefer back camera on mobile
+            const cameraId = 'environment';
             
             html5QrCode.start(
                 cameraId,
@@ -445,23 +534,16 @@
                 scannerStatus.innerHTML = 
                     '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Camera access denied<br>' +
                     '<small>Please allow camera permissions</small></span>';
-                console.error("Scanner error:", err);
             });
         }
         
         function onScanSuccess(decodedText, decodedResult) {
-            console.log("Scanned:", decodedText);
-            
-            // Stop scanning temporarily
-            if (html5QrCode) {
-                html5QrCode.pause();
-            }
+            if (html5QrCode) html5QrCode.pause();
             
             const scannerStatus = document.getElementById('scannerStatus');
             const scanResult = document.getElementById('scanResult');
             const scannedItem = document.getElementById('scannedItem');
             
-            // Search for item
             const item = currentData.find(i => 
                 i.ItemAlias && i.ItemAlias.toString().trim() === decodedText.trim()
             );
@@ -472,28 +554,28 @@
                 
                 scannedItem.innerHTML = `
                     <div class="item-name">${escapeHtml(item.ItemName)}</div>
-                    <div class="item-details">${escapeHtml(item.ItemAlias)} • ${escapeHtml(item.GroupName)}</div>
+                    <div class="item-details">
+                        <strong>Barcode:</strong> ${escapeHtml(item.ItemAlias)} • 
+                        <strong>Group:</strong> ${escapeHtml(item.GroupName)}
+                    </div>
                     <div class="prices">
                         <span class="price-badge mrp">MRP: ₹${formatPrice(item.Item_MRP)}</span>
                         <span class="price-badge sale">Sale: ₹${formatPrice(item.Item_Sale_Price)}</span>
-                        <span class="price-badge purchase">Purchase: ₹${formatPrice(item.Item_Purchase_Price)}</span>
+                        <span class="price-badge wholesale">Wholesale: ₹${formatPrice(item.Item_SelfVal_Price)}</span>
+                        <span class="price-badge purchase">Pur: ₹${formatPrice(item.Item_Purchase_Price)}</span>
                     </div>
-                    <span class="stock ${getStockClass(item.Stock)}">Stock: ${item.Stock}</span>
+                    <span class="stock ${getStockClass(item.Stock)}">
+                        <i class="fas fa-box"></i> Stock: ${item.Stock}
+                    </span>
                 `;
                 
                 scanResult.style.display = 'block';
-                
-                // Update search input
                 document.getElementById('searchInput').value = decodedText;
                 
-                // Trigger search
                 const searchEvent = new Event('input', { bubbles: true });
                 document.getElementById('searchInput').dispatchEvent(searchEvent);
                 
-                // Auto close after 3 seconds
-                setTimeout(() => {
-                    closeScanner();
-                }, 3000);
+                setTimeout(() => closeScanner(), 3000);
                 
             } else {
                 scannerStatus.innerHTML = 
@@ -502,7 +584,6 @@
                 
                 scanResult.style.display = 'none';
                 
-                // Resume scanning after 2 seconds
                 setTimeout(() => {
                     if (html5QrCode && document.getElementById('scannerModal').style.display === 'flex') {
                         html5QrCode.resume();
@@ -512,8 +593,7 @@
         }
         
         function onScanError(errorMessage) {
-            // Ignore most errors (they happen during normal scanning)
-            console.log("Scan error (normal):", errorMessage);
+            console.log("Scan error:", errorMessage);
         }
         
         function closeScanner() {
@@ -521,9 +601,7 @@
             scannerModal.style.display = 'none';
             
             if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop().then(() => {
-                    html5QrCode.clear();
-                }).catch(err => {
+                html5QrCode.stop().catch(err => {
                     console.error("Failed to stop scanner:", err);
                 });
             }
@@ -538,7 +616,6 @@
             const autoRefreshToggle = document.getElementById('autoRefreshToggle');
             const manualRefreshBtn = document.getElementById('manualRefreshBtn');
             
-            // Toggle auto-refresh
             autoRefreshToggle.addEventListener('click', function() {
                 autoRefreshEnabled = !autoRefreshEnabled;
                 
@@ -555,10 +632,8 @@
                 }
             });
             
-            // Manual refresh
             manualRefreshBtn.addEventListener('click', function() {
                 if (isSearching) {
-                    // Confirm if user wants to refresh while searching
                     if (confirm('You are currently searching. Refresh will clear your search. Continue?')) {
                         isSearching = false;
                         document.getElementById('searchInput').value = '';
@@ -569,34 +644,27 @@
                 }
             });
             
-            // Start auto-refresh initially
             startAutoRefresh();
         }
         
         function startAutoRefresh() {
-            stopAutoRefresh(); // Clear any existing intervals
-            
+            stopAutoRefresh();
             if (!autoRefreshEnabled) return;
             
             countdownSeconds = 10;
             updateCountdown();
             
-            // Countdown timer
             countdownInterval = setInterval(() => {
                 countdownSeconds--;
                 updateCountdown();
                 
-                if (countdownSeconds <= 0) {
-                    // Only refresh if not searching
-                    if (!isSearching) {
-                        loadData();
-                    }
+                if (countdownSeconds <= 0 && !isSearching) {
+                    loadData();
                     countdownSeconds = 10;
                     updateCountdown();
                 }
             }, 1000);
             
-            // Actual data refresh (every 30 seconds)
             autoRefreshInterval = setInterval(() => {
                 if (!isSearching && autoRefreshEnabled) {
                     loadData();
@@ -605,14 +673,8 @@
         }
         
         function stopAutoRefresh() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
         }
         
         function updateCountdown() {
@@ -627,24 +689,6 @@
         }
         
         // =================== DISPLAY FUNCTIONS ===================
-        function updateStats() {
-            if (!currentData.length) return;
-            
-            const totalItems = currentData.length;
-            const inStock = currentData.filter(item => parseFloat(item.Stock || 0) > 0).length;
-            const outOfStock = totalItems - inStock;
-            
-            let totalValue = 0;
-            currentData.forEach(item => {
-                totalValue += (parseFloat(item.Stock) || 0) * (parseFloat(item.Item_Purchase_Price) || 0);
-            });
-            
-            document.getElementById('totalItems').textContent = totalItems;
-            document.getElementById('inStock').textContent = inStock;
-            document.getElementById('outOfStock').textContent = outOfStock;
-            document.getElementById('totalValue').textContent = '₹' + totalValue.toFixed(2);
-        }
-        
         function renderItems(items) {
             const container = document.getElementById('itemsList');
             
@@ -659,16 +703,12 @@
                 return;
             }
             
-            // Sort: in stock first, then by name
             const sortedItems = [...items].sort((a, b) => {
                 const stockA = parseFloat(a.Stock || 0);
                 const stockB = parseFloat(b.Stock || 0);
                 
-                // Out of stock items go last
                 if (stockA === 0 && stockB > 0) return 1;
                 if (stockA > 0 && stockB === 0) return -1;
-                
-                // Then sort by name
                 return (a.ItemName || '').localeCompare(b.ItemName || '');
             });
             
@@ -682,15 +722,12 @@
                     <div class="prices">
                         <span class="price-badge mrp">MRP: ₹${formatPrice(item.Item_MRP)}</span>
                         <span class="price-badge sale">Sale: ₹${formatPrice(item.Item_Sale_Price)}</span>
-                        <span class="price-badge purchase">Buy: ₹${formatPrice(item.Item_Purchase_Price)}</span>
-                        <span class="price-badge wholesale">Self: ₹${formatPrice(item.Item_SelfVal_Price)}</span>
+                        <span class="price-badge wholesale">Wholesale: ₹${formatPrice(item.Item_SelfVal_Price)}</span>
+                        <span class="price-badge purchase">Pur: ₹${formatPrice(item.Item_Purchase_Price)}</span>
                     </div>
                     <span class="stock ${getStockClass(item.Stock)}">
                         <i class="fas fa-box"></i> Stock: ${item.Stock}
                     </span>
-                    <div style="margin-top: 8px; font-size: 11px; color: #666;">
-                        <i class="fas fa-calculator"></i> Value: ₹${formatPrice((item.Stock || 0) * (item.Item_Purchase_Price || 0))}
-                    </div>
                 </div>
             `).join('');
         }
@@ -724,13 +761,11 @@
         // =================== KEYBOARD SHORTCUTS ===================
         function setupKeyboardShortcuts() {
             document.addEventListener('keydown', function(e) {
-                // Ctrl+F or / to focus search
                 if ((e.ctrlKey && e.key === 'f') || e.key === '/') {
                     e.preventDefault();
                     document.getElementById('searchInput').focus();
                 }
                 
-                // Escape to clear search or close scanner
                 if (e.key === 'Escape') {
                     if (document.getElementById('scannerModal').style.display === 'flex') {
                         closeScanner();
@@ -738,11 +773,9 @@
                         document.getElementById('searchInput').value = '';
                         isSearching = false;
                         renderItems(currentData);
-                        updateStats();
                     }
                 }
                 
-                // F5 to refresh (but confirm if searching)
                 if (e.key === 'F5') {
                     e.preventDefault();
                     if (isSearching) {
@@ -760,16 +793,13 @@
         
         // =================== INITIALIZE APP ===================
         async function initApp() {
-            // Setup all functionality
             setupSearch();
             setupBarcodeScanner();
             setupRefreshControls();
             setupKeyboardShortcuts();
             
-            // Load initial data
             await loadData();
             
-            // Show welcome for 2 seconds
             setTimeout(() => {
                 if (currentData.length > 0) {
                     document.getElementById('welcome').style.display = 'none';
@@ -777,7 +807,6 @@
             }, 2000);
         }
         
-        // Start when page loads
         document.addEventListener('DOMContentLoaded', initApp);
         
         // Global function for debugging
