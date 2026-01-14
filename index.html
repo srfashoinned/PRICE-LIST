@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIBAS Stock</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- HTML5 QR Code Scanner for mobile devices -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Simple Scanner Library -->
+    <script src="https://unpkg.com/@ericblade/quagga2/dist/quagga.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: #f5f5f5; 
             color: #333;
-            font-size: 16px; /* Increased base font size */
+            font-size: 16px;
         }
         
-        /* HEADER - SIMPLIFIED */
+        /* HEADER */
         .header { 
             background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); 
             color: white; 
-            padding: 25px 20px; /* Increased padding */
+            padding: 25px 20px;
             text-align: center;
         }
         .header h1 { 
-            font-size: 36px; /* Increased font size */
+            font-size: 36px;
             font-weight: bold;
             margin-bottom: 10px;
             letter-spacing: 1px;
@@ -32,10 +32,10 @@
         .live-badge { 
             background: #28a745; 
             color: white; 
-            padding: 8px 20px; /* Increased padding */
+            padding: 8px 20px;
             border-radius: 20px; 
             margin-left: 15px;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             font-weight: bold;
             animation: pulse 2s infinite; 
             vertical-align: middle;
@@ -46,24 +46,23 @@
             100% { opacity: 1; } 
         }
         
-        /* Search Box with Scanner */
+        /* Search Box */
         .search-container { 
             background: white; 
-            padding: 20px; /* Increased padding */
-            margin: 15px; /* Increased margin */
+            padding: 20px;
+            margin: 15px;
             border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Stronger shadow */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             display: flex;
-            gap: 15px; /* Increased gap */
+            gap: 15px;
             align-items: center;
         }
         .search-input { 
             flex: 1; 
-            padding: 16px; /* Increased padding */
+            padding: 16px;
             border: 2px solid #ddd; 
             border-radius: 8px; 
-            font-size: 18px; /* Increased font size */
-            transition: border-color 0.3s;
+            font-size: 18px;
         }
         .search-input:focus { 
             border-color: #2c5aa0; 
@@ -74,25 +73,22 @@
             background: #28a745;
             color: white;
             border: none;
-            padding: 16px 25px; /* Increased padding */
+            padding: 16px 25px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 18px; /* Increased font size */
+            font-size: 18px;
             display: flex;
             align-items: center;
-            gap: 10px; /* Increased gap */
+            gap: 10px;
             white-space: nowrap;
             font-weight: bold;
         }
         .scan-btn:hover { 
             background: #218838; 
             transform: translateY(-2px);
-            transition: all 0.3s;
         }
-        .scan-btn.mobile { background: #007bff; }
-        .scan-btn.mobile:hover { background: #0069d9; }
         
-        /* Scanner Modal */
+        /* SIMPLE SCANNER MODAL */
         .scanner-modal {
             display: none;
             position: fixed;
@@ -107,250 +103,254 @@
         }
         .scanner-box {
             background: white;
-            padding: 30px; /* Increased padding */
+            padding: 30px;
             border-radius: 15px;
-            width: 90%;
+            width: 95%;
             max-width: 500px;
             text-align: center;
         }
         .scanner-box h3 {
-            font-size: 24px; /* Increased font size */
+            font-size: 24px;
             margin-bottom: 15px;
             color: #2c5aa0;
         }
-        .scanner-box p {
-            font-size: 16px; /* Increased font size */
-            margin-bottom: 20px;
-            color: #666;
-        }
-        #qr-reader {
+        
+        /* Camera Preview */
+        #cameraPreview {
             width: 100%;
-            margin: 20px 0; /* Increased margin */
+            max-width: 400px;
+            height: 300px;
+            background: #000;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
         }
+        #cameraPreview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #28a745;
+            box-shadow: 0 0 0 1000px rgba(0,0,0,0.7);
+        }
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #28a745;
+            animation: scanLine 2s infinite;
+        }
+        @keyframes scanLine {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+        
+        /* Manual Barcode Input */
+        .manual-input {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .manual-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .manual-input button {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
         .close-scanner {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 12px 25px; /* Increased padding */
+            padding: 12px 25px;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px; /* Increased margin */
-            font-size: 16px; /* Increased font size */
+            margin-top: 20px;
+            font-size: 16px;
             font-weight: bold;
         }
-        .close-scanner:hover {
-            background: #c82333;
-        }
         
-        /* ITEMS - UPDATED STYLING */
+        /* ITEMS */
         .item-card { 
             background: white; 
-            margin: 15px; /* Increased margin */
-            padding: 20px; /* Increased padding */
+            margin: 15px;
+            padding: 20px;
             border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Stronger shadow */
-            border-left: 5px solid #2c5aa0; /* Thicker border */
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid #2c5aa0;
+            transition: transform 0.3s;
         }
         .item-card:hover { 
             transform: translateY(-5px); 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         }
         
         .item-name { 
             font-weight: bold; 
-            font-size: 20px; /* Increased font size */
-            margin-bottom: 10px; /* Increased margin */
+            font-size: 20px;
+            margin-bottom: 10px;
             color: #2c5aa0;
         }
         .item-details { 
             color: #666; 
-            font-size: 16px; /* Increased font size */
-            margin-bottom: 15px; /* Increased margin */
+            font-size: 16px;
+            margin-bottom: 15px;
             background: #f8f9fa;
             padding: 10px;
             border-radius: 6px;
         }
         
-        /* PRICES - UPDATED ORDER AND COLORS */
+        /* PRICES */
         .prices { 
             display: flex; 
-            gap: 10px; /* Increased gap */
+            gap: 10px;
             flex-wrap: wrap; 
-            margin-bottom: 15px; /* Increased margin */
+            margin-bottom: 15px;
         }
         .price-badge { 
-            padding: 8px 15px; /* Increased padding */
+            padding: 8px 15px;
             border-radius: 6px; 
-            font-size: 14px; /* Increased font size */
+            font-size: 14px;
             font-weight: bold;
         }
-        .mrp { 
-            background: #007bff; 
-            color: white;
-            order: 1; /* MRP first */
-        }
-        .sale { 
-            background: #28a745; 
-            color: white;
-            order: 2; /* Sale second */
-        }
-        .wholesale { 
-            background: #6f42c1; /* Purple for wholesale */
-            color: white;
-            order: 3; /* Wholesale third */
-        }
-        .purchase { 
-            background: #dc3545; /* RED as requested */
-            color: white;
-            order: 4; /* Purchase last */
-        }
+        .mrp { background: #007bff; color: white; }
+        .sale { background: #28a745; color: white; }
+        .wholesale { background: #6f42c1; color: white; }
+        .purchase { background: #dc3545; color: white; }
         
-        /* STOCK - UPDATED */
+        /* STOCK */
         .stock { 
-            padding: 8px 20px; /* Increased padding */
+            padding: 8px 20px;
             border-radius: 20px; 
-            font-size: 16px; /* Increased font size */
+            font-size: 16px;
             font-weight: bold; 
             display: inline-block;
             margin-top: 10px;
         }
-        .stock-high { 
-            background: #d4edda; 
-            color: #155724;
-            border: 2px solid #c3e6cb;
-        }
-        .stock-low { 
-            background: #fff3cd; 
-            color: #856404;
-            border: 2px solid #ffeaa7;
-        }
-        .stock-zero { 
-            background: #f8d7da; 
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
+        .stock-high { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .stock-low { background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; }
+        .stock-zero { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
         
         /* Status Bar */
         .status-bar { 
             text-align: center; 
-            padding: 15px; /* Increased padding */
-            font-size: 16px; /* Increased font size */
+            padding: 15px;
+            font-size: 16px;
             color: #666;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px; /* Increased gap */
+            gap: 15px;
             flex-wrap: wrap;
             background: white;
-            margin: 15px; /* Increased margin */
+            margin: 15px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .refresh-controls {
             display: flex;
-            gap: 15px; /* Increased gap */
+            gap: 15px;
             align-items: center;
         }
         .refresh-toggle {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 8px 15px; /* Increased padding */
+            padding: 8px 15px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px; /* Increased font size */
+            font-size: 14px;
             font-weight: bold;
         }
-        .refresh-toggle.active {
-            background: #28a745;
-        }
-        .refresh-toggle:hover {
-            opacity: 0.9;
-        }
+        .refresh-toggle.active { background: #28a745; }
         #manualRefreshBtn {
             background: #2c5aa0;
             color: white;
             border: none;
-            padding: 8px 15px; /* Increased padding */
+            padding: 8px 15px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 14px; /* Increased font size */
+            font-size: 14px;
             font-weight: bold;
         }
-        #manualRefreshBtn:hover {
-            background: #1e3a8a;
-        }
         
-        /* No items message */
+        /* No items */
         .no-items {
             text-align: center;
-            padding: 60px 20px; /* Increased padding */
+            padding: 60px 20px;
             color: #666;
         }
-        .no-items i {
-            font-size: 64px; /* Increased font size */
-            margin-bottom: 20px; /* Increased margin */
-            color: #ccc;
-        }
-        .no-items h3 {
-            font-size: 24px; /* Increased font size */
-            margin-bottom: 15px; /* Increased margin */
-        }
-        .no-items p {
-            font-size: 18px; /* Increased font size */
-        }
+        .no-items i { font-size: 64px; margin-bottom: 20px; color: #ccc; }
+        .no-items h3 { font-size: 24px; margin-bottom: 15px; }
+        .no-items p { font-size: 18px; }
         
-        /* Mobile specific */
+        /* Mobile */
         @media (max-width: 768px) {
-            body { font-size: 18px; } /* Even larger on mobile */
+            body { font-size: 18px; }
             .header h1 { font-size: 32px; }
             .live-badge { font-size: 16px; padding: 6px 15px; }
             .search-container { flex-direction: column; }
             .scan-btn { width: 100%; justify-content: center; }
-            .item-name { font-size: 22px; } /* Larger on mobile */
+            .item-name { font-size: 22px; }
             .item-details { font-size: 18px; }
             .price-badge { font-size: 16px; padding: 10px 18px; }
             .stock { font-size: 18px; padding: 10px 25px; }
         }
-        
-        /* Tablet */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .item-card {
-                margin: 20px;
-                padding: 25px;
-            }
-            .item-name { font-size: 22px; }
-        }
     </style>
 </head>
 <body>
-    <!-- SIMPLIFIED HEADER -->
     <div class="header">
         <h1>LIBAS <span class="live-badge">LIVE</span></h1>
     </div>
     
-    <!-- Search Box with Scanner -->
     <div class="search-container">
         <input type="text" class="search-input" placeholder="Search by name, barcode, or group..." id="searchInput">
-        <button class="scan-btn" id="desktopScanBtn">
+        <button class="scan-btn" id="scanBtn">
             <i class="fas fa-camera"></i> Scan Barcode
-        </button>
-        <button class="scan-btn mobile" id="mobileScanBtn">
-            <i class="fas fa-mobile-alt"></i> Mobile Scanner
         </button>
     </div>
     
-    <!-- Scanner Modal -->
+    <!-- SIMPLE SCANNER MODAL -->
     <div class="scanner-modal" id="scannerModal">
         <div class="scanner-box">
             <h3><i class="fas fa-qrcode"></i> Barcode Scanner</h3>
-            <p>Point camera at barcode or QR code</p>
             
-            <div id="qr-reader"></div>
+            <div id="cameraPreview">
+                <video id="scannerVideo" autoplay playsinline></video>
+                <div class="scanner-overlay"></div>
+                <div class="scanner-line"></div>
+            </div>
             
             <div id="scannerStatus" style="margin: 15px 0; color: #666; font-size: 16px;">
-                <i class="fas fa-info-circle"></i> Ready to scan...
+                <i class="fas fa-info-circle"></i> Allow camera access to scan
+            </div>
+            
+            <!-- Manual Input as Fallback -->
+            <div class="manual-input">
+                <p style="margin-bottom: 10px; color: #666;">Or enter barcode manually:</p>
+                <input type="text" id="manualBarcode" placeholder="Enter barcode number">
+                <button id="manualSearchBtn">
+                    <i class="fas fa-search"></i> Search
+                </button>
             </div>
             
             <div id="scanResult" style="display: none; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
@@ -363,7 +363,6 @@
         </div>
     </div>
     
-    <!-- Status Bar -->
     <div class="status-bar" id="status">
         <span id="statusText">
             <i class="fas fa-spinner fa-spin"></i> Loading live stock data...
@@ -379,7 +378,6 @@
         </div>
     </div>
     
-    <!-- Items Container -->
     <div id="itemsContainer">
         <div id="welcome" class="no-items">
             <i class="fas fa-warehouse"></i>
@@ -398,7 +396,8 @@
         let autoRefreshInterval;
         let countdownInterval;
         let countdownSeconds = 10;
-        let html5QrCode = null;
+        let cameraStream = null;
+        let quaggaInitialized = false;
         
         // =================== DATA LOADING ===================
         async function loadData() {
@@ -471,86 +470,179 @@
             });
         }
         
-        // =================== BARCODE SCANNING ===================
+        // =================== SIMPLE CAMERA SCANNER ===================
         function setupBarcodeScanner() {
-            const desktopScanBtn = document.getElementById('desktopScanBtn');
-            const mobileScanBtn = document.getElementById('mobileScanBtn');
+            const scanBtn = document.getElementById('scanBtn');
             const scannerModal = document.getElementById('scannerModal');
             const closeScannerBtn = document.getElementById('closeScanner');
+            const manualSearchBtn = document.getElementById('manualSearchBtn');
+            const manualBarcodeInput = document.getElementById('manualBarcode');
             
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                mobileScanBtn.style.display = 'flex';
-                desktopScanBtn.style.display = 'none';
-            } else {
-                mobileScanBtn.style.display = 'none';
-                desktopScanBtn.style.display = 'flex';
-            }
-            
-            desktopScanBtn.addEventListener('click', function() {
-                document.getElementById('scannerStatus').innerHTML = 
-                    '<i class="fas fa-info-circle"></i> Use mobile device for scanning<br>' +
-                    '<small>Scan with phone camera and enter code manually</small>';
+            // Open scanner
+            scanBtn.addEventListener('click', function() {
                 scannerModal.style.display = 'flex';
+                startSimpleScanner();
             });
             
-            mobileScanBtn.addEventListener('click', function() {
-                scannerModal.style.display = 'flex';
-                startMobileScanner();
-            });
-            
+            // Close scanner
             closeScannerBtn.addEventListener('click', closeScanner);
             scannerModal.addEventListener('click', function(e) {
                 if (e.target === scannerModal) closeScanner();
             });
-        }
-        
-        function startMobileScanner() {
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("qr-reader");
-            }
             
-            const scannerStatus = document.getElementById('scannerStatus');
-            scannerStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting camera...';
+            // Manual barcode search
+            manualSearchBtn.addEventListener('click', function() {
+                const barcode = manualBarcodeInput.value.trim();
+                if (barcode) {
+                    searchByBarcode(barcode);
+                    manualBarcodeInput.value = '';
+                }
+            });
             
-            const config = { 
-                fps: 10, 
-                qrbox: { width: 250, height: 250 } 
-            };
-            
-            const cameraId = 'environment';
-            
-            html5QrCode.start(
-                cameraId,
-                config,
-                onScanSuccess,
-                onScanError
-            ).then(() => {
-                scannerStatus.innerHTML = 
-                    '<i class="fas fa-camera"></i> Camera ready! Point at barcode<br>' +
-                    '<small>Hold steady for best results</small>';
-            }).catch(err => {
-                scannerStatus.innerHTML = 
-                    '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Camera access denied<br>' +
-                    '<small>Please allow camera permissions</small></span>';
+            manualBarcodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const barcode = this.value.trim();
+                    if (barcode) {
+                        searchByBarcode(barcode);
+                        this.value = '';
+                    }
+                }
             });
         }
         
-        function onScanSuccess(decodedText, decodedResult) {
-            if (html5QrCode) html5QrCode.pause();
+        // SIMPLE CAMERA ACCESS (No complex libraries)
+        async function startSimpleScanner() {
+            const scannerStatus = document.getElementById('scannerStatus');
+            const scannerVideo = document.getElementById('scannerVideo');
             
+            scannerStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Requesting camera access...';
+            
+            try {
+                // Stop any existing stream
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Request camera with simple constraints
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment', // Prefer back camera
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                
+                // Display camera feed
+                scannerVideo.srcObject = cameraStream;
+                
+                scannerStatus.innerHTML = 
+                    '<i class="fas fa-camera"></i> Camera ready! Point at barcode<br>' +
+                    '<small>Scan with phone camera or enter code manually</small>';
+                
+                // Start Quagga for barcode detection
+                startBarcodeDetection();
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    scannerStatus.innerHTML = 
+                        '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Camera permission denied<br>' +
+                        '<small>1. Click the camera icon in address bar<br>' +
+                        '2. Select "Allow" for camera access<br>' +
+                        '3. Or use manual input below</small></span>';
+                } else if (error.name === 'NotFoundError') {
+                    scannerStatus.innerHTML = 
+                        '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> No camera found<br>' +
+                        '<small>Use manual input below</small></span>';
+                } else {
+                    scannerStatus.innerHTML = 
+                        '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Camera error<br>' +
+                        '<small>' + error.message + '</small></span>';
+                }
+                
+                // Hide camera preview if error
+                document.getElementById('cameraPreview').style.display = 'none';
+            }
+        }
+        
+        // BARCODE DETECTION WITH QUAGGA
+        function startBarcodeDetection() {
+            if (quaggaInitialized) return;
+            
+            const scannerVideo = document.getElementById('scannerVideo');
+            
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: scannerVideo,
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment"
+                    },
+                },
+                decoder: {
+                    readers: [
+                        "code_128_reader",
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                },
+                locate: true,
+                frequency: 10
+            }, function(err) {
+                if (err) {
+                    console.log("Quagga init error (normal on some devices):", err);
+                    return;
+                }
+                
+                quaggaInitialized = true;
+                Quagga.start();
+                
+                Quagga.onDetected(function(result) {
+                    const code = result.codeResult.code;
+                    if (code) {
+                        handleScannedBarcode(code);
+                    }
+                });
+            });
+        }
+        
+        function handleScannedBarcode(barcode) {
+            console.log("Scanned:", barcode);
+            
+            // Stop detection temporarily
+            if (Quagga && quaggaInitialized) {
+                Quagga.stop();
+            }
+            
+            searchByBarcode(barcode);
+            
+            // Auto close after successful scan
+            setTimeout(() => {
+                closeScanner();
+            }, 2000);
+        }
+        
+        function searchByBarcode(barcode) {
             const scannerStatus = document.getElementById('scannerStatus');
             const scanResult = document.getElementById('scanResult');
             const scannedItem = document.getElementById('scannedItem');
             
+            // Search for item
             const item = currentData.find(i => 
-                i.ItemAlias && i.ItemAlias.toString().trim() === decodedText.trim()
+                i.ItemAlias && i.ItemAlias.toString().trim() === barcode.trim()
             );
             
             if (item) {
                 scannerStatus.innerHTML = 
-                    `<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Found: ${escapeHtml(decodedText)}</span>`;
+                    `<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Found: ${escapeHtml(barcode)}</span>`;
                 
                 scannedItem.innerHTML = `
                     <div class="item-name">${escapeHtml(item.ItemName)}</div>
@@ -570,45 +662,52 @@
                 `;
                 
                 scanResult.style.display = 'block';
-                document.getElementById('searchInput').value = decodedText;
                 
+                // Update search input
+                document.getElementById('searchInput').value = barcode;
+                
+                // Trigger search
                 const searchEvent = new Event('input', { bubbles: true });
                 document.getElementById('searchInput').dispatchEvent(searchEvent);
                 
-                setTimeout(() => closeScanner(), 3000);
-                
             } else {
                 scannerStatus.innerHTML = 
-                    `<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Not found: ${escapeHtml(decodedText)}<br>` +
+                    `<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Not found: ${escapeHtml(barcode)}<br>` +
                     `<small>Barcode not in inventory</small></span>`;
                 
                 scanResult.style.display = 'none';
                 
+                // Resume scanning after 2 seconds
                 setTimeout(() => {
-                    if (html5QrCode && document.getElementById('scannerModal').style.display === 'flex') {
-                        html5QrCode.resume();
+                    if (Quagga && !quaggaInitialized) {
+                        startBarcodeDetection();
                     }
                 }, 2000);
             }
-        }
-        
-        function onScanError(errorMessage) {
-            console.log("Scan error:", errorMessage);
         }
         
         function closeScanner() {
             const scannerModal = document.getElementById('scannerModal');
             scannerModal.style.display = 'none';
             
-            if (html5QrCode && html5QrCode.isScanning) {
-                html5QrCode.stop().catch(err => {
-                    console.error("Failed to stop scanner:", err);
-                });
+            // Stop camera
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
             }
             
+            // Stop Quagga
+            if (Quagga && quaggaInitialized) {
+                Quagga.stop();
+                quaggaInitialized = false;
+            }
+            
+            // Reset UI
             document.getElementById('scanResult').style.display = 'none';
+            document.getElementById('cameraPreview').style.display = 'block';
             document.getElementById('scannerStatus').innerHTML = 
-                '<i class="fas fa-info-circle"></i> Ready to scan...';
+                '<i class="fas fa-info-circle"></i> Allow camera access to scan';
+            document.getElementById('manualBarcode').value = '';
         }
         
         // =================== AUTO-REFRESH CONTROL ===================
@@ -634,7 +733,7 @@
             
             manualRefreshBtn.addEventListener('click', function() {
                 if (isSearching) {
-                    if (confirm('You are currently searching. Refresh will clear your search. Continue?')) {
+                    if (confirm('Refresh will clear your search. Continue?')) {
                         isSearching = false;
                         document.getElementById('searchInput').value = '';
                         loadData();
@@ -758,45 +857,11 @@
                 .replace(/'/g, '&#039;');
         }
         
-        // =================== KEYBOARD SHORTCUTS ===================
-        function setupKeyboardShortcuts() {
-            document.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey && e.key === 'f') || e.key === '/') {
-                    e.preventDefault();
-                    document.getElementById('searchInput').focus();
-                }
-                
-                if (e.key === 'Escape') {
-                    if (document.getElementById('scannerModal').style.display === 'flex') {
-                        closeScanner();
-                    } else if (document.getElementById('searchInput').value) {
-                        document.getElementById('searchInput').value = '';
-                        isSearching = false;
-                        renderItems(currentData);
-                    }
-                }
-                
-                if (e.key === 'F5') {
-                    e.preventDefault();
-                    if (isSearching) {
-                        if (confirm('Refresh will clear your search. Continue?')) {
-                            isSearching = false;
-                            document.getElementById('searchInput').value = '';
-                            loadData();
-                        }
-                    } else {
-                        loadData();
-                    }
-                }
-            });
-        }
-        
         // =================== INITIALIZE APP ===================
         async function initApp() {
             setupSearch();
             setupBarcodeScanner();
             setupRefreshControls();
-            setupKeyboardShortcuts();
             
             await loadData();
             
@@ -808,16 +873,6 @@
         }
         
         document.addEventListener('DOMContentLoaded', initApp);
-        
-        // Global function for debugging
-        window.debugInfo = function() {
-            return {
-                totalItems: currentData.length,
-                searching: isSearching,
-                autoRefresh: autoRefreshEnabled,
-                searchTerm: document.getElementById('searchInput').value
-            };
-        };
     </script>
 </body>
 </html>
