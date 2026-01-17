@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LIBAS Stock Dashboard</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .search { padding: 10px; width: 100%; margin-bottom: 20px; font-size: 16px; }
+        .item { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .barcode { color: green; font-weight: bold; }
+        .price { color: red; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 LIBAS Stock Management</h1>
+        <p>2845 items | Updated: <span id="updateTime">Just now</span></p>
+        
+        <input type="text" class="search" id="search" placeholder="Search by name or barcode..." onkeyup="searchItems()">
+        
+        <div id="results">
+            <p>Loading items...</p>
+        </div>
+    </div>
+    
+    <script src="stock_data.js"></script>
+    <script>
+        function searchItems() {
+            const term = document.getElementById('search').value.toLowerCase();
+            const items = window.stockData || [];
+            
+            if (items.length === 0) {
+                document.getElementById('results').innerHTML = '<p>No data loaded</p>';
+                return;
+            }
+            
+            const filtered = items.filter(item => 
+                item.name.toLowerCase().includes(term) || 
+                item.barcode.includes(term)
+            );
+            
+            let html = '';
+            filtered.forEach(item => {
+                html += 
+                    <div class="item">
+                        <h3></h3>
+                        <p class="barcode">Barcode: </p>
+                        <p class="price">Price: ₹</p>
+                        <p>Stock: </p>
+                    </div>
+                ;
+            });
+            
+            document.getElementById('results').innerHTML = 
+                <p>Showing  of  items</p> + html;
+        }
+        
+        // Auto-load data
+        setTimeout(() => {
+            if (window.stockData) {
+                document.getElementById('updateTime').textContent = window.lastUpdate || 'Just now';
+                searchItems();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
