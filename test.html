@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .item { border: 1px solid #ccc; padding: 10px; margin: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Data Test Page</h1>
+    
+    <div id="status">Loading...</div>
+    <div id="data"></div>
+    
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('stock_data.js?t=' + Date.now());
+                const jsCode = await response.text();
+                
+                // Clear any previous data
+                window.stockData = null;
+                
+                // Execute the JavaScript code
+                eval(jsCode);
+                
+                const statusDiv = document.getElementById('status');
+                const dataDiv = document.getElementById('data');
+                
+                if (window.stockData && Array.isArray(window.stockData)) {
+                    statusDiv.innerHTML = `<span class="success">✅ SUCCESS! Loaded ${window.stockData.length} items</span>`;
+                    
+                    // Show first 5 items
+                    let html = '<h3>First 5 items:</h3>';
+                    window.stockData.slice(0, 5).forEach((item, index) => {
+                        html += `
+                            <div class="item">
+                                <strong>${index + 1}. ${item.ItemName || 'N/A'}</strong><br>
+                                Barcode: ${item.ItemAlias || 'N/A'}<br>
+                                Sale: ₹${item.Item_Sale_Price || 0}<br>
+                                MRP: ₹${item.Item_MRP || 0}<br>
+                                Stock: ${item.Stock || 0}<br>
+                                Group: ${item.GroupName || 'N/A'}
+                            </div>
+                        `;
+                    });
+                    
+                    dataDiv.innerHTML = html;
+                    
+                    // Log to console
+                    console.log('Data loaded:', window.stockData.length, 'items');
+                    console.log('First item:', window.stockData[0]);
+                    
+                } else {
+                    statusDiv.innerHTML = `<span class="error">❌ ERROR: window.stockData is not an array or is null</span>`;
+                    console.log('What was loaded:', jsCode.substring(0, 200));
+                }
+                
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    `<span class="error">❌ ERROR: ${error.message}</span>`;
+                console.error('Load error:', error);
+            }
+        }
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
